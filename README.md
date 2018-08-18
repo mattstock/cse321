@@ -1,2 +1,3 @@
 # cse321
-CSE 321
+
+Materials related to CSE 321.
