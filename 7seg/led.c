@@ -8,11 +8,18 @@
 
 #define DISPLAY_SIZE 16
 
+#define SPI_SS_PIN PB2
+#define SR_ENABLE_PIN PB7
+#define SR_OUT_PIN PC4
+#define SR_CLOCK_PIN PC5
+#define SR_LATCH_PIN PC7
+
+
 /*
- * Firmware v2.0 for 7seg SPI display.
+ * Firmware v2.2 for 7seg SPI display.
  *
- * Instructions are of the form RW DD VVVV
- * RW = 0x00 is read, 0x01 is write
+ * Instructions are of the form CC DD VVVV
+ * CC = command 0x00 is read, 0x01 is write, 0x02 and 0x03 are demo modes
  * DD = digit (0-DISPLAY_SIZE)
  * VVV0 = display value, low 6 bits always 0
  *
@@ -30,70 +37,93 @@ unsigned short num2seg(unsigned char dig);
 
 // digit we are displaying
 volatile unsigned char digit = 0;
+
 // SPI I/O state machine
-volatile unsigned char spistate = 0;
+typedef enum { COMMAND, ADDRESS, HIDAT, LOWDAT } state_t;
+volatile state_t spistate = COMMAND;
+
 // address of digit for SPI
 volatile unsigned char addr;
 // direction of current SPI operation
 volatile unsigned char rw;
 // display values
 unsigned short values[DISPLAY_SIZE];
+volatile uint8_t slowdigits = 0;
 
 ISR(SPI_STC_vect) {
   TCNT1 = 0; // reset the timer watchdog  
   switch (spistate) {
-  case 0: // direction byte
-    rw = (SPDR != 0);
-    spistate = 1;
+  case COMMAND:
+    switch (SPDR) {
+    case 0: // read
+      rw = 0;
+      spistate = ADDRESS;
+      break;
+    case 1: // write
+      rw = 1;
+      spistate = ADDRESS;
+      break;
+    case 2: // load values
+      for (int i=0; i < DISPLAY_SIZE; i++)
+	values[i] = num2seg(i);
+      break;
+    case 3: // set refresh rate for display to slow
+      slowdigits = 1;
+      break;
+    case 4: // set refresh rate to normal
+      slowdigits = 0;
+      break;
+    }
     break;
-  case 1: // R: prep high byte, W: nothing;
+  case ADDRESS: // R: prep high byte, W: nothing;
     addr = SPDR;
     if (addr >= DISPLAY_SIZE) {
       SPDR = 0xff;
-      spistate = 0;
+      spistate = COMMAND;
     } else {
-      spistate = 2;
+      spistate = HIDAT;
       if (!rw)
 	SPDR = values[addr] >> 8;
     }
     break;
-  case 2: // R: prep low byte, W: fetch high byte
+  case HIDAT: // R: prep low byte, W: fetch high byte
     if (!rw) {
       SPDR = values[addr] && 0xff;
     } else
       values[addr] = SPDR << 8;
-    spistate = 3;
+    spistate = LOWDAT;
     break;
-  case 3: // R: prep junk, W: fetch low byte
+  case LOWDAT: // R: prep junk, W: fetch low byte
     if (!rw)
       SPDR = 0xa4;
     else
       values[addr] |= SPDR;
-    spistate = 0;
+    spistate = COMMAND;
     break;
   }
 }
 
 inline void led_enable() {
-  PORTB &= 0x3f;
+  PORTB &= ~(1 << SR_ENABLE_PIN);
 }
 
 inline void led_disable() {
-  PORTB |= 0x80;
+  PORTB |= (1 << SR_ENABLE_PIN);
 }
 
 inline void led_latch() {
-  PORTC |= 0x80;
-  PORTC &= 0x3f;
+  PORTC |= (1 << SR_LATCH_PIN);
+  PORTC &= ~(1 << SR_LATCH_PIN);
 }
 
 inline void led_clock() {
-  PORTC |= 0x20;
-  PORTC &= 0xdf;
+  PORTC |= (1 << SR_CLOCK_PIN);
+  PORTC &= ~(1 << SR_CLOCK_PIN);
 }
 
+// Another way to do the above: _BV() is a macro that does (1 << x)
 inline void led_data(unsigned char state) {
-  PORTC = (state ? PORTC | 0x10 : PORTC & 0xef);
+  PORTC = (state ? PORTC | _BV(SR_OUT_PIN) : PORTC & ~_BV(SR_OUT_PIN));
 }
 
 // take 16 bits as input, and push to the tlc6c5912 (12 bits)
@@ -113,9 +143,12 @@ void bitbang(unsigned short value) {
   led_latch();
 }
 
+volatile uint16_t tick = 0;
 
 ISR(TIMER0_COMPA_vect) {
-  digit = (digit+1)%DISPLAY_SIZE;
+  tick++;
+  if (!slowdigits || (tick%256 == 0))
+    digit = (digit+1)%DISPLAY_SIZE;
 }
 
 // ABCDEF coded output for testing.
@@ -162,15 +195,15 @@ int main(void) {
   PORTD = 0x01;
 
   // SPI control register p126
-  SPCR = 0b11000000; // slave mode, msb, enable SPI interrupt, mode0
+  SPCR = _BV(SPIE) | _BV(SPE); // slave mode, msb, enable SPI interrupt, mode0
  
   // timer 0 - display strobe
   // OCRA is top, IOclk/64, and since IOclk == 8Mhz, this is 125Khz
-  TCCR0A = 0b1011;
+  TCCR0A = _BV(CTC0) | 0b011;
   // Output compare A, which is used as the top of the counting range
   OCR0A = 0x60;
-  // enable OCIE0A interrupt
-  TIMSK0 = 0b10;  
+  // enable timer0 interrupt
+  TIMSK0 = _BV(OCIE0A); 
   // enable interrupts (SPI and timer0)
   sei();
 
@@ -178,7 +211,7 @@ int main(void) {
   for (i=0; i < DISPLAY_SIZE; i++)
     values[i] = 0;
   values[0] = num2seg(2) | 0x100;
-  values[1] = num2seg(0);
+  values[1] = num2seg(2);
 
   // Main loop
   while (1) {
@@ -187,28 +220,31 @@ int main(void) {
      * reset the state machine.  This implies that we need to have a
      * whole message within a single transmission.
      */
-    if (PINB & 0x4)
-      spistate = 0;
+    if (PINB & _BV(SPI_SS_PIN))
+      spistate = COMMAND;
     
     // If the strobe timer changed, we need to refresh.
     if (digit != old_digit) {
       old_digit = digit;
       led_disable();
       bitbang(values[digit]);
+
+      // Change the digit select.
       if (digit < 8) {
-	PORTB &= 0xfc;
-	PORTB |= 0x01;
-	PORTC &= 0xf0;
-	PORTD = (1 << digit);
+	PORTA = 0x00; // clear digit8 - digit11
+	PORTB &= 0xfd; // clear lower colon bit 0x02
+	PORTB |= 0x01; // set upper colon bit
+	PORTC &= 0xf0; // clear digit12 - digit15
+	PORTD = (1 << digit); // select digit0 - digit7
       } else if (digit < 12) {
-	PORTA = 1 << (digit - 8);
-	PORTB &= 0xfc;
-	PORTB |= 0x02;
-	PORTD = 0x00;
+	PORTA = 1 << (digit - 8); // select digit8 - digit12
+	PORTB &= 0xfe; // clear upper colon bit 0x01
+	PORTB |= 0x02;  // set lower colon bit
+	PORTD = 0x00; // clear digit0 - digit7
       } else {
-	PORTA = 0x00;
-	PORTC &= 0xf0;
-	PORTC |= 1 << (digit - 12);
+	PORTA = 0x00; // clear digit8 - digit12
+	PORTC &= 0xf0; // clear digit12 - digit15
+	PORTC |= 1 << (digit - 12); // select digit12 - digit15
       }
       led_enable();
     }

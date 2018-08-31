@@ -3,7 +3,8 @@ OBJCOPY=avr-objcopy
 CFLAGS=-mmcu=attiny88 -Os
 PROGFLAGS=-B100 -p t88 -c $(ISP) -e
 #ISP=avrisp2
-ISP=jtag3isp
+#ISP=jtag3isp
+ISP=usbtiny
 
 all: led led.hex
 
