@@ -17,7 +17,7 @@
  * comments above the function stub.
  *
  * The main() function should be left unchanged.  If all works as expected,
- * the result of the program shoudl match what is in validate.txt.
+ * the result of the program should match what is in reference.txt.
  */
 
 struct ntuple {
