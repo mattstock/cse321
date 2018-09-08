@@ -6,16 +6,15 @@ PROGFLAGS=-B100 -p t85 -c $(ISP) -e
 #ISP=jtag3isp
 ISP=usbtiny
 
-all: registers registers.hex
+programs = registers direct direct2 direct3 direct4 sw-led
+
+all: ${programs}
 
 clean:
-	rm -f *.o *.hex registers
+	rm -f *.hex *~ *.o ${programs}
 
 %.hex: %
 	$(OBJCOPY) -j .text -j .data -O ihex $< $@
 
-fuse:
-	avrdude -B100 -p t88 -c $(ISP) -U lfuse:w:0xEE:m
-
-install: registers.hex
-	avrdude $(PROGFLAGS) -U flash:w:registers.hex
+install-%: %.hex
+	avrdude $(PROGFLAGS) -U flash:w:$<
