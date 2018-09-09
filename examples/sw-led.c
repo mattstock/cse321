@@ -8,7 +8,8 @@ volatile uint8_t * const registers = (uint8_t *)0x20;
 
 int main() {
   DDRB = 1; // Pin 0 is output, rest are inputs
-
+  PORTB = 0b10000; // Pullup resistor for pin 4
+  
   while (1) {
     if (PINB & 0b10000) { // Check if Pin 4 is high
       PORTB &= 0b11111110; // clear Pin 0
