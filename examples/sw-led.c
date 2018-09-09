@@ -11,10 +11,10 @@ int main() {
 
   while (1) {
     if (PINB & 0b10000) { // Check if Pin 4 is high
-      // PORTB &= 0b11111110; // clear Pin 0
-      // PORTB &= 254;
+      PORTB &= 0b11111110; // clear Pin 0
+      // PORTB &= 254; // these are all equivalent
       // PORTB &= 0xfe;
-      PORTB &= ~1;
+      // PORTB &= ~1; // invert happens at compile time
     } else {
       PORTB |= 1; // set pin 0 
     }
