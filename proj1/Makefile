@@ -1,10 +1,11 @@
+CC=cc -std=c99
 
 all: proj1
 
 
 validate: proj1 reference.txt
 	@./proj1 > output.txt
-	@diff -u0 output.txt reference.txt > diff.out
+	@diff -U 0 output.txt reference.txt > diff.out
 	@echo "PASS"
 
 clean:
