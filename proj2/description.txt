@@ -1,0 +1,77 @@
+Project 2: binary safe
+
+Problem statement: You need to program the firmware for a hotel safe.
+
+Hardware: two momentary pushbuttons (key0 and key1), and four leds (one green, one red,
+one blue, and one yellow).  Your hardware team has selected the ATtiny85,
+which only has 5 usable I/O pins, and so there is multiplexing of the leds
+using the Charlieplexing technique.
+
+Initialization state:  At power up/reset, the unit should be in the
+unlocked state (indicated by the green led) and in programming mode
+(indicated by the yellow led).  It will then accept a 6 bit code, using
+key0 and key1 to represent "0" and "1" respectively.  When the code is provided,
+it should move into the locked state (indicated by the red
+led), and the programming led should go off.
+
+It will now wait for a 6 bit code to be entered.  If the entry is correct,
+it will move to unlock/program mode.  If incorrect, it will flash the
+yellow led for a short time, and wait for another 6 bit input.
+
+The blue led should be used as a visual indicator to acknowledge a
+button press (i.e. a short flash for each press).
+
+You will need to use some debounce logic on the switch inputs.
+
+You need to use an interrupt handler.
+
+You need to use some form of finite state machine.
+
+Bonus features:
+
+If fewer that 6 bits are entered in programming or lock mode, there should
+be a ~3 second timeout that when hit will cause the bits to be cleared and
+the process to begin again.  The yellow light should flash a few times if
+this timeout is triggered.
+
+Save the code to the EEPROM memory so that it persists even when powered
+down.  In this case, if the last state was locked, it will power up into
+the locked state, and will only unlock if the stored 6 bit key is entered.
+Add a "secret" power up mode where if a button is held down during power
+up it will clear the stored value and start in the unlocked state.
+
+While waiting for the start of user input (in unlocked or locked state),
+reduce power consumption by going into a sleep mode.
+
+Demonstration and submissions:
+
+You will need to submit your code using the same submit_cse321 process as from project 1.
+If there are any issues with compiling or running your program on our reference hardware,
+you will be contacted by one of the TAs to schedule a time to demo your solution.
+We will take your code, compile it, and load it into our hardware.
+Tests will include :
+  - Initialization state
+  - Button handling (does it accept the needed number of inputs)
+  - Does it change to a lock state
+  - Does it only unlock when given the correct pattern
+  - Testing of any bonus elements you may have completed
+Additional review of your code will take place after the demo.
+
+Grading:
+
+Correct code implementing the required components: 60%
+  - Compiles: 10%
+  - No warnings: 5%
+  - Initializes peripherals correctly: 10%
+  - Working input loop with debounce: 10% (5% for debounce)
+  - Proper use of interrupt handler: 5%
+  - Proper use of FSM: 5%
+  - Set necessary variables to volatile: 5%
+  - Changes from lock/unlock state after 6 bits: 5%
+  - Only changes when the proper value is input: 5%
+
+Efficient use of system resources: 20%
+Clear, well documented code: 20%
+Input timeout bonus: +5
+Persistent state bonus: +5
+Power consumption bonus: +5

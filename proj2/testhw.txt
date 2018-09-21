@@ -1,0 +1,27 @@
+This is a simple test program to help you validate that your hardware
+is configured correctly for project 2.
+
+I recommend that you try one or two simple programs to make sure that
+you understand the development environment before building up the
+project 2 hardware configuration "permanently."
+
+You can install the program by running:
+
+make install-testhw
+
+while your hardware is connected to the machine you are running the VM
+in.  The LEDs will all flash when the device is programmed, and then
+this sequence of LEDs will run once:
+
+RED solid while GREEN blinks 3 times
+GREEN solid while BLUE blinks 3 times
+YELLOW solid while RED blinks 3 times
+BLUE solid on
+
+At this point, if you press key0, the LEDs will cycle one at a time in
+one direction, and if you release it and press key1, they will cycle
+in the other direction.  The directions (i.e. which switch is which)
+doesn't really matter.
+
+If this is how your hardware works, great!  If not, check to make sure
+that your wiring is correct and if you get stuck, check with your TA.
