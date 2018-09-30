@@ -4,6 +4,7 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdlib.h>
 #include <avr/interrupt.h>
 
 #define LED_PIN0 (1 << PB0)
@@ -11,32 +12,36 @@
 #define LED_PIN2 (1 << PB2)
 
 #define SLOW 0xff
-#define FAST 0xf8
 
 ISR(TIMER0_COMPA_vect) {
   // Toggle the pin
-  PORTB ^= LED_PIN1;
+  PORTB ^= LED_PIN0|LED_PIN1;
   // Add our interval to whatever the last value was
   OCR0A += SLOW;
 }
 
-ISR(TIMER0_COMPB_vect) {
-  PORTB ^= LED_PIN0;
-  OCR0B += FAST;
-}
-
 int main(void) {
   DDRB = LED_PIN1|LED_PIN0; // set 0 and 1 pins to output, default is input
-  PORTB = 0; // both low == LEDs off
+  PORTB = LED_PIN0;
 
   OCR0A = SLOW;
-  OCR0B = FAST;
   TCCR0B = 0b101; // no prescale
 
-  // Enable the two timer0 comparator interrupts
-  TIMSK = (1 << OCIE0A) | (1 << OCIE0B);
+  // Enable the timer0 comparator a interrupt
+  TIMSK = (1 << OCIE0A);
 
   sei();
   
-  while (1);
+  while (1) {
+    switch (rand() % 4) {
+    case 0:
+      _delay_ms(10);
+    case 1:
+      _delay_ms(10);
+    case 2:
+      _delay_ms(10);
+    case 3:
+      _delay_ms(10);
+    }
+  }
 }
