@@ -10,12 +10,16 @@
 #define LED_PIN2 (1 << PB2)
 
 int main(void) {
-  DDRB = LED_PIN1|LED_PIN0; // set 0 and 1 pins to output, default is input
+  // set 0 and 1 pins to output, default is input
+  DDRB = LED_PIN1|LED_PIN0;
 
+  // PB1 output is high, current flows from that pin, via yellow to PB0
   PORTB = LED_PIN1;
   
   while (1) {
+    // busy wait for 1s, based on the clock described above
     _delay_ms(1000);
+    // swap current source and sink, causing yellow and green to toggle
     PORTB ^= LED_PIN1|LED_PIN0;
   }
 }

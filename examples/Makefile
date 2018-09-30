@@ -6,7 +6,7 @@ PROGFLAGS=-B100 -p t85 -c $(ISP) -e
 #ISP=jtag3isp
 ISP=usbtiny
 
-programs = registers direct direct2 direct3 direct4 sw-led simple timers timers2
+programs = registers direct direct2 direct3 direct4 sw-led simple timers timers2 sw-led2
 
 all: ${programs}
 
