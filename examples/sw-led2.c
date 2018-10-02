@@ -5,7 +5,7 @@
 #define KEY_PIN0 (1 << PB3)
 
 // version of the sw-led program using the proj 2 hardware.
-// If the button is pressed, the yellow LED will turn on.
+// If the button is pressed, the LED will turn on.
 
 int main(void) {
   // set PB0 and PB1 pins to output, default is input (high-Z)
