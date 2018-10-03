@@ -10,7 +10,7 @@
 #define LED_PIN1 (1 << PB1)
 #define LED_PIN2 (1 << PB2)
 
-#define SLOW 0xff
+#define SLOW 0x90
 
 /* example of how we'd use timer0 without interrupts.
  * timer0 is documented in chapter 11 on the datasheet.
@@ -22,7 +22,7 @@ int main(void) {
   DDRB = LED_PIN1|LED_PIN0; // set 0 and 1 pins to output, default is input
   PORTB = LED_PIN0;
   
-  TCCR0B = 0b101; // no prescale
+  TCCR0B = 0b101; // prescale by 1024
 
   slow = TCNT0 + SLOW;
 
