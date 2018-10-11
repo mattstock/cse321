@@ -23,7 +23,7 @@ int main(void) {
   PORTB = LED_PIN0;
 
   //TCCR: Timer/Counter control register
-  TCCR0B = 0b011; // prescale by 1024
+  TCCR0B = 0b101; // prescale by 1024
 
 //TCNT: Timer/Counter
   slow = TCNT0 + SLOW;
