@@ -28,3 +28,4 @@ unsigned long long     uLongLong    = val;
 printf("%llu %llu\n",uint64,uLongLong); // 18446744073709551615
 
 }
+//help: https://www.geeksforgeeks.org/

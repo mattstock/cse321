@@ -16,17 +16,18 @@ void printBits(unsigned num)
 }
 
 int main(){
-	unsigned int x ,y; 
-	scanf("%u %u",&x,&y); 
-    printf("x = "); printBits(x); 
+	unsigned int x ,y;
+	scanf("%u %u",&x,&y);
+    printf("x = "); printBits(x);
     printf("y = "); printBits(y);
-    printf("x&y = "); printBits(x&y); 
-    printf("x|y = "); printBits(x|y);  
-    printf("x^y = "); printBits(x^y); 
-    printf("~x = "); printBits(~x);   
-    printf("x<<2 = "); printBits(x<<2);   
-    printf("x>>2 = "); printBits(x>>2);   
-    
+    printf("x&y = "); printBits(x&y);
+    printf("x|y = "); printBits(x|y);
+    printf("x^y = "); printBits(x^y);
+    printf("~x = "); printBits(~x);
+    printf("x<<2 = "); printBits(x<<2);
+    printf("x>>2 = "); printBits(x>>2);
+
     return 0;
 
 }
+//help: https://www.geeksforgeeks.org/ 
