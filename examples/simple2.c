@@ -5,9 +5,9 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#define LED_PIN0 (1 << PB0) //0b0001
-#define LED_PIN1 (1 << PB1)
-#define LED_PIN2 (1 << PB2)
+#define LED_PIN0 (1 << PB0) //0b00000001
+#define LED_PIN1 (1 << PB1) //0b00000010
+#define LED_PIN2 (1 << PB2) //0b00000100
 
 int main(void) {
   // set 0 and 1 pins to output, default is input
