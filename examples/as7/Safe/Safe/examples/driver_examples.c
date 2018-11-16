@@ -50,3 +50,12 @@ void TIMER_0_example(void)
 	timer_add_task(&TIMER_0, &TIMER_0_task2);
 	timer_start(&TIMER_0);
 }
+
+/**
+ * Example of using PWM_0.
+ */
+void PWM_0_example(void)
+{
+	pwm_set_parameters(&PWM_0, 10000, 5000);
+	pwm_enable(&PWM_0);
+}

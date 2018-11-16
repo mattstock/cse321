@@ -19,6 +19,8 @@ struct timer_descriptor TIMER_0;
 
 struct i2c_m_sync_desc I2C_0;
 
+struct pwm_descriptor PWM_0;
+
 void I2C_0_PORT_init(void)
 {
 
@@ -72,6 +74,27 @@ static void TIMER_0_init(void)
 	_pm_enable_bus_clock(PM_BUS_APBA, RTC);
 	_gclk_enable_channel(RTC_GCLK_ID, CONF_GCLK_RTC_SRC);
 	timer_init(&TIMER_0, RTC, _rtc_get_timer());
+}
+
+void PWM_0_PORT_init(void)
+{
+
+	gpio_set_pin_function(PA14, PINMUX_PA14E_TC3_WO0);
+
+	gpio_set_pin_function(PA19, PINMUX_PA19E_TC3_WO1);
+}
+
+void PWM_0_CLOCK_init(void)
+{
+	_pm_enable_bus_clock(PM_BUS_APBC, TC3);
+	_gclk_enable_channel(TC3_GCLK_ID, CONF_GCLK_TC3_SRC);
+}
+
+void PWM_0_init(void)
+{
+	PWM_0_CLOCK_init();
+	PWM_0_PORT_init();
+	pwm_init(&PWM_0, TC3, _tc_get_pwm());
 }
 
 void system_init(void)
@@ -288,4 +311,6 @@ void system_init(void)
 	delay_driver_init();
 
 	TIMER_0_init();
+
+	PWM_0_init();
 }

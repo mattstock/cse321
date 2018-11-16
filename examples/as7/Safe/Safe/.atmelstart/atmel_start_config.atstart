@@ -194,6 +194,49 @@ drivers:
           input: Generic clock generator 0
         configuration:
           rtc_clk_selection: Generic clock generator 0
+  PWM_0:
+    user_label: PWM_0
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::TC3::driver_config_definition::PWM::HAL:Driver:PWM
+    functionality: PWM
+    api: HAL:Driver:PWM
+    configuration:
+      tc_arch_dbgrun: false
+      tc_arch_evact: Event action disabled
+      tc_arch_mceo0: false
+      tc_arch_mceo1: false
+      tc_arch_mode: Counter in 16-bit mode
+      tc_arch_ovfeo: false
+      tc_arch_presync: Reload or reset counter on next GCLK
+      tc_arch_runstdby: false
+      tc_arch_tcei: false
+      tc_arch_tceinv: false
+      tc_arch_wave_duty_val: 500
+      tc_arch_wave_per_val: 1000
+      tc_prescaler: Divide by 8
+      timer_event_control: false
+    optional_signals:
+    - identifier: PWM_0:WO/0
+      pad: PA14
+      mode: PWM output
+      configuration: null
+      definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::optional_signal_definition::TC3.WO.0
+      name: TC3/WO/0
+      label: WO/0
+    - identifier: PWM_0:WO/1
+      pad: PA19
+      mode: PWM output
+      configuration: null
+      definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::optional_signal_definition::TC3.WO.1
+      name: TC3/WO/1
+      label: WO/1
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC
+          input: Generic clock generator 0
+        configuration:
+          tc_gclk_selection: Generic clock generator 0
   DMAC:
     user_label: DMAC
     definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::DMAC::driver_config_definition::DMAC::HAL:HPL:DMAC
@@ -617,6 +660,12 @@ pads:
     mode: I2C
     user_label: PA09
     configuration: null
+  PA14:
+    name: PA14
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::pad::PA14
+    mode: Peripheral IO
+    user_label: PA14
+    configuration: null
   SW0:
     name: PA15
     definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::pad::PA15
@@ -624,6 +673,12 @@ pads:
     user_label: SW0
     configuration:
       pad_pull_config: Pull-up
+  PA19:
+    name: PA19
+    definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::pad::PA19
+    mode: Peripheral IO
+    user_label: PA19
+    configuration: null
   LED0:
     name: PB30
     definition: Atmel:SAMD21_Drivers:0.0.1::SAMD21J18A-AU::pad::PB30

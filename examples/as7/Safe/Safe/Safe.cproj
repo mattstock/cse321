@@ -127,9 +127,9 @@
           <AcmeProjectActionInfo Action="File" Source="hri/hri_usb_d21.h" IsConfig="false" Hash="RxhrdW3BEk3zWzOXVeshaQ" />
           <AcmeProjectActionInfo Action="File" Source="hri/hri_wdt_d21.h" IsConfig="false" Hash="ruUMkugqrufLH89qsLNR9Q" />
           <AcmeProjectActionInfo Action="File" Source="main.c" IsConfig="false" Hash="k0AH7j+BrmdFhBPzCCMptA" />
-          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="LCaRi2G7inPi1mOTzlvRnw" />
+          <AcmeProjectActionInfo Action="File" Source="driver_init.c" IsConfig="false" Hash="r9+Trg9aPO1B7HNncEG5xg" />
           <AcmeProjectActionInfo Action="File" Source="driver_init.h" IsConfig="false" Hash="gj365mXT5O/IzU+vPzWz2Q" />
-          <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="2KaNNe6n58//bWnEgJrOow" />
+          <AcmeProjectActionInfo Action="File" Source="atmel_start_pins.h" IsConfig="false" Hash="pQa9gB89wBnXfYT9ib8Igw" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.h" IsConfig="false" Hash="nIfjdV2kdoTGgxanvR8aNg" />
           <AcmeProjectActionInfo Action="File" Source="examples/driver_examples.c" IsConfig="false" Hash="XaRd0afcOVF0MqertSTQtg" />
           <AcmeProjectActionInfo Action="File" Source="hal/include/hal_pwm.h" IsConfig="false" Hash="RXcBZcci/7vXKRJKNIq/Kw" />
@@ -169,7 +169,7 @@
           <AcmeProjectActionInfo Action="File" Source="config/hpl_sercom_config.h" IsConfig="true" Hash="Wo3elaNnbjCtSxdeZ4KX3A" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_sysctrl_config.h" IsConfig="true" Hash="Ba4iK873K10dYe/h/VRU9A" />
           <AcmeProjectActionInfo Action="File" Source="config/hpl_systick_config.h" IsConfig="true" Hash="tlT3lNDKWFe82MiGWfQzcA" />
-          <AcmeProjectActionInfo Action="File" Source="config/hpl_tc_config.h" IsConfig="true" Hash="dxdfzMWX7ABh8jzV5P+4YQ" />
+          <AcmeProjectActionInfo Action="File" Source="config/hpl_tc_config.h" IsConfig="true" Hash="zdW7zf8feXaQU58ecpB66A" />
           <AcmeProjectActionInfo Action="File" Source="config/peripheral_clk_config.h" IsConfig="true" Hash="uEgZKkP8LuFKYXU+juvEmQ" />
         </AcmeActionInfos>
         <NonsecureFilesInfo />
@@ -206,6 +206,7 @@
       <Value>../hpl/sercom</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/systick</Value>
+      <Value>../hpl/tc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -243,6 +244,7 @@
       <Value>../hpl/sercom</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/systick</Value>
+      <Value>../hpl/tc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -264,6 +266,7 @@
       <Value>../hpl/sercom</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/systick</Value>
+      <Value>../hpl/tc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -301,6 +304,7 @@
       <Value>../hpl/sercom</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/systick</Value>
+      <Value>../hpl/tc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -339,6 +343,7 @@
       <Value>../hpl/sercom</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/systick</Value>
+      <Value>../hpl/tc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -361,6 +366,7 @@
       <Value>../hpl/sercom</Value>
       <Value>../hpl/sysctrl</Value>
       <Value>../hpl/systick</Value>
+      <Value>../hpl/tc</Value>
       <Value>../hri</Value>
       <Value>%24(PackRepoDir)\Atmel\SAMD21_DFP\1.3.331\samd21a\include</Value>
     </ListValues>
@@ -398,6 +404,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Config\hpl_systick_config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Config\hpl_tc_config.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Config\peripheral_clk_config.h">
@@ -442,6 +451,9 @@
     <Compile Include="hal\include\hal_io.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="hal\include\hal_pwm.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="hal\include\hal_sleep.h">
       <SubType>compile</SubType>
     </Compile>
@@ -482,6 +494,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="hal\include\hpl_missing_features.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="hal\include\hpl_pwm.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="hal\include\hpl_reset.h">
@@ -545,6 +560,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="hal\src\hal_io.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="hal\src\hal_pwm.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="hal\src\hal_sleep.c">
@@ -641,6 +659,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="hpl\systick\hpl_systick.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="hpl\tc\hpl_tc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="hpl\tc\hpl_tc_base.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="hri\hri_ac_d21.h">
@@ -745,6 +769,7 @@
     <Folder Include="hpl\sercom\" />
     <Folder Include="hpl\sysctrl\" />
     <Folder Include="hpl\systick\" />
+    <Folder Include="hpl\tc\" />
     <Folder Include="hri\" />
   </ItemGroup>
   <ItemGroup>
