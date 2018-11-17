@@ -1,0 +1,105 @@
+#ifndef F_CPU
+#define F_CPU 1000000UL
+#endif
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include <stdlib.h>
+
+#define LED_G (1 << PB2)
+#define LED_R (1 << PB1)
+#define LED_Y (1 << PB0)
+
+void task_a(void) {
+  while (1) {
+    PORTB |= LED_R;
+    _delay_ms(200);
+    PORTB &= ~LED_R;
+    _delay_ms(500);
+  }
+}
+
+void task_b(void) {
+  while (1) {
+    PORTB |= LED_Y;
+    _delay_ms(150);
+    PORTB &= ~LED_Y;
+    _delay_ms(400);
+  }
+}
+
+typedef struct {
+  uint8_t status;
+  void *stack;
+} task_t;
+
+task_t tasks[] = {
+  { 1, NULL },
+  { 0, (void *)0x100 }
+};
+
+volatile int current_task;
+volatile void *px;
+volatile void *task_func;
+
+// Task scheduler service
+ISR(TIMER0_COMPA_vect, ISR_NAKED) {
+  /* Save all of the execution state to the current stack */
+  asm volatile ("push r0\n in r0, __SREG__");
+  asm volatile ("push r0");
+  asm volatile ("push r1\n clr r1");
+  asm volatile ("push r2\n push r3\n push r4\n push r5\n push r6\n push r7");
+  asm volatile ("push r8\n push r9\n push r10\n push r11\n push r12");
+  asm volatile ("push r13\n push r14\n push r15\n push r16\n push r17");
+  asm volatile ("push r18\n push r19\n push r20\n push r21\n push r22");
+  asm volatile ("push r23\n push r24\n push r25\n push r26\n push r27");
+  asm volatile ("push r28\n push r29\n push r30\n push r31");
+
+  px = tasks[current_task].stack;
+  /* Save the task's stack pointer */
+  asm volatile ("lds r26, px");
+  asm volatile ("lds r27, px+1");
+  asm volatile ("in r0, __SP_L__\n st x+, r0");
+  asm volatile ("in r0, __SP_H__\n st x+, r0");
+
+  /* Change task */
+  current_task = (current_task + 1) % 2;
+  px = tasks[current_task].stack;
+
+  /* Set up new stack location */
+  asm volatile ("lds r26, px");
+  asm volatile ("lds r27, px+1");
+  asm volatile ("ld r28, x+\n out __SP_L__, r28");
+  asm volatile ("ld r29, x+\n out __SP_H__, r29");
+
+  /* For a new thread */
+  if (tasks[current_task].status == 0) {
+    tasks[current_task].status = 1;
+    task_func = &task_b;
+    asm volatile ("lds r0, task_func\n st x+, r0");
+    asm volatile ("lds r0, task_func+1\n st x+, r0");
+  } else {
+    /* recover previous state */
+    asm volatile ("pop r31\n pop r30\n pop r29\n pop r28\n pop r27\n pop r26");
+    asm volatile ("pop r25\n pop r24\n pop r23\n pop r22\n pop r21\n pop r20");
+    asm volatile ("pop r19\n pop r18\n pop r17\n pop r16\n pop r15\n pop r14");
+    asm volatile ("pop r13\n pop r12\n pop r11\n pop r10\n pop r9\n pop r8");
+    asm volatile ("pop r7\n pop r6\n pop r5\n pop r4\n pop r3\n pop r2\n pop r1");
+    asm volatile ("pop r0\n out __SREG__, r0\n pop r0");
+  }
+  
+  asm volatile ("reti");
+}
+
+void main() {
+  DDRB = LED_R|LED_Y|LED_G;
+  TCCR0B = 0b101;
+  TIMSK = (1 << OCIE0A);
+
+  current_task = 0;
+  
+  sei();
+
+  task_a();
+}
