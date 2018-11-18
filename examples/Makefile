@@ -1,6 +1,6 @@
 CC=avr-gcc
 OBJCOPY=avr-objcopy
-CFLAGS=-mmcu=attiny85 -Os -I/usr/local/include
+CFLAGS=-mmcu=attiny85 -Os -I/usr/local/include -std=gnu99
 PROGFLAGS=-B100 -p t85 -c $(ISP) -e
 #ISP=avrisp2
 ISP=jtag3isp
