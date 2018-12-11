@@ -15,7 +15,7 @@
 /* example of how we'd use timer0 without interrupts.
  * timer0 is documented in chapter 11 on the datasheet.
  */
-
+// timer runs very fast
 int main(void) {
   uint8_t slow;
 
@@ -23,8 +23,9 @@ int main(void) {
   PORTB = LED_PIN0;
 
   //TCCR: Timer/Counter control register
-  TCCR0B = 0b101; // prescale by 1024
+  // prescale by 64 ; as a result timer runs really fast. We cannot observe the switch.
 
+  TCCR0B = 0b011; 
 //TCNT: Timer/Counter
   slow = TCNT0 + SLOW;
 

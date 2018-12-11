@@ -9,16 +9,13 @@
 #define LED_PIN1 (1 << PB1) //0b00000010
 #define LED_PIN2 (1 << PB2) //0b00000100
 
+// SWITCHING BETWEEN GREEN AND RED LED
+//carefully look at the board diagram.
 int main(void) {
-  // set 0 and 1 pins to output, default is input
-  //DDRB = LED_PIN1|LED_PIN2|LED_PIN0;
-
-  DDRB = LED_PIN0 | LED_PIN1;
-  //DDRB = (1 << DDB0) | (1 << DDB1)
+  // set 0,1,2 pins to output, default is input
+  DDRB = LED_PIN1|LED_PIN2|LED_PIN0;
   // PB1 output is high, current flows from that pin, via yellow to PB0
-  //set PORTB to LED_PIN1 and see the difference. Which LED lights up first?
-  PORTB = LED_PIN0 ;
-  //PORTB = LED_PIN1;
+  PORTB = LED_PIN0;
 
   while (1) {
     // busy wait for 1s, based on the clock described above
@@ -26,7 +23,7 @@ int main(void) {
     _delay_ms(1000);
     //PORTB = LED_PIN0;
     // swap current source and sink, causing yellow and green to toggle
-    PORTB ^= LED_PIN0|LED_PIN1;
-    //PORTB ^= LED_PIN0|LED_PIN2;
+
+    PORTB ^= LED_PIN0|LED_PIN2;
   }
 }
